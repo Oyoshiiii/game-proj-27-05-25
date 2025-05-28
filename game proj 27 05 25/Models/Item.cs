@@ -9,6 +9,8 @@
         public int Y { get; set; }
         public InteractionType Interaction { get; set; } 
         public bool IsInteracted { get; set; }
+        public bool WasFound { get; set; }
+        public bool WasUsed { get; set; }
     }
 
     public enum InteractionType
