@@ -7,4 +7,19 @@
     <RootNamespace>game_proj_27_05_25</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\images\PilotCabin\photo.png" />
+    <Content Remove="wwwroot\images\PilotCabin\pilotCabin.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\Hall\" />
+    <Folder Include="wwwroot\images\Pantry\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\PilotCabin\photo.png" />
+    <None Include="wwwroot\images\PilotCabin\pilotCabin.jpg" />
+  </ItemGroup>
+
 </Project>

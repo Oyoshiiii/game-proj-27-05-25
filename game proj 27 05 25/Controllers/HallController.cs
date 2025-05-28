@@ -10,7 +10,7 @@ namespace game_proj_27_05_25.Controllers
         [HttpGet]
         public IActionResult Hall()
         {
-            var items = 
+            //var items = 
             return View();
         }
 
