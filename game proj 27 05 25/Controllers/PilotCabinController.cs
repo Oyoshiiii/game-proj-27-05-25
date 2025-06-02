@@ -26,6 +26,7 @@ namespace game_proj_27_05_25.Controllers
             }
             return View(items);
         }
+        [Route("/PilotCabin")]
         [HttpPost]
         public IActionResult Interact()
         {
@@ -46,9 +47,6 @@ namespace game_proj_27_05_25.Controllers
                 {
                     Id = 1,
                     Name = "photo",
-                    ImagePath = "/images/PilotCabin/photo.png",
-                    X = 200,
-                    Y = 400,
                     Interaction = InteractionType.PickupDialog,
                     WasFound = photo.WasFound,
                     WasUsed = photo.WasUsed
@@ -57,19 +55,6 @@ namespace game_proj_27_05_25.Controllers
 
             HttpContext.Session.Set(SessionKey, items);
             return items;
-        }
-    }
-    public static class SessionExtensions
-    {
-        public static void Set<T>(this ISession session, string key, T value)
-        {
-            session.SetString(key, JsonSerializer.Serialize(value));
-        }
-
-        public static T Get<T>(this ISession session, string key)
-        {
-            var value = session.GetString(key);
-            return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
     }
 }

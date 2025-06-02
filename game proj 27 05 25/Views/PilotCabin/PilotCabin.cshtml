@@ -1,11 +1,11 @@
-﻿@page
+﻿@model IEnumerable<game_proj_27_05_25.Models.Item>
 
 <style>
     body {
-        background-image: url('/images/PilotCabin/pilotCabin.jpg');
-        background-size: cover; 
+        background-image: url('images/PilotCabin/pilotCabin.jpg');
+        background-size: cover;
         background-repeat: no-repeat;
-        background-attachment: fixed; 
+        background-attachment: fixed;
         margin: 0;
         padding: 0;
     }
@@ -16,13 +16,102 @@
         margin: 0;
         padding: 0;
     }
-    .move-btn{
+
+    .move-btn {
         border: none;
     }
+
+    .dialog {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(73, 73, 103, 0.8);
+        padding: 30px;
+        border: none;
+        border-radius: 20px;
+        z-index: 1000;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .click-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: rgba(186, 186, 186, 0.59);
+        transition: filter .4s;
+    }
+
+        .click-btn:hover {
+            filter: brightness(70%);
+        }
+
+        .click-btn:active {
+            filter: brightness(120%);
+        }
+
+    .buttons {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 20px;
+    }
+
+    .dialog-message {
+        background-color: rgba(186, 186, 186, 0.74);
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .changeLocation-btn {
+        position: absolute;
+        top: 90%;
+        left: 45%;
+        background-color: transparent;
+        border: none;
+        transition: filter .4s;
+    }
+
+        .changeLocation-btn:hover {
+            filter: brightness(70%);
+        }
+
+        .changeLocation-btn:active {
+            filter: brightness(120%);
+        }
+
+    .downArrow {
+        height: 50px;
+    }
+
+
+    #photo {
+        transform: translate(330px, 110px);
+        border-radius: 5px;
+        filter: brightness(80%);
+        transition: filter .4s;
+    }
+
+        #photo:hover {
+            filter: brightness(65%);
+        }
+
+        #photo:active {
+            filter: brightness(100%);
+        }
 </style>
 
 <body>
-    <button>
-        ---
+    <div class="dialog" name="dialog">
+        <p class="dialog-message">Photo</p>
+        <div class="buttons">
+            <button onclick="takeItem(true)" class="click-btn">Взять</button>
+            <button onclick="takeItem(false)" class="click-btn">Оставить</button>
+        </div>
+    </div>
+    <button name="changeLocation-btn" class="changeLocation-btn">
+        <img src="/images/ForAll/downArrow.png" class="downArrow">
     </button>
+    <img src="/images/PilotCabin/photo.png" id="photo">
 </body>
