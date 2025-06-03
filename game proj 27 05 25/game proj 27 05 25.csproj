@@ -8,18 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\images\PilotCabin\photo.png" />
-    <Content Remove="wwwroot\images\PilotCabin\pilotCabin.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\images\Hall\" />
-    <Folder Include="wwwroot\images\Pantry\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\images\PilotCabin\photo.png" />
-    <None Include="wwwroot\images\PilotCabin\pilotCabin.jpg" />
+    <Folder Include="wwwroot\img\Hall\" />
+    <Folder Include="wwwroot\img\Pantry\" />
   </ItemGroup>
 
 </Project>

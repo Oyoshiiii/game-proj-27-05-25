@@ -1,8 +1,15 @@
 ﻿@model IEnumerable<game_proj_27_05_25.Models.Item>
+@using game_proj_27_05_25.Models;
 
 <style>
+    @@font-face {
+        font-family: Hero;
+        font-weight: 700;
+        src: url("fonts/ofont.ru_Hero.ttf");
+    }
+
     body {
-        background-image: url('images/PilotCabin/pilotCabin.jpg');
+        background-image: url('img/PilotCabin/pilotCabin.jpg');
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
@@ -32,7 +39,7 @@
         border: none;
         border-radius: 20px;
         z-index: 1000;
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: Hero;
     }
 
     .click-btn {
@@ -41,14 +48,15 @@
         padding: 10px;
         background-color: rgba(186, 186, 186, 0.59);
         transition: filter .4s;
+        font-family: Hero;
     }
 
         .click-btn:hover {
-            filter: brightness(70%);
+            filter: brightness(120%);
         }
 
         .click-btn:active {
-            filter: brightness(120%);
+            filter: brightness(70%);
         }
 
     .buttons {
@@ -74,11 +82,11 @@
     }
 
         .changeLocation-btn:hover {
-            filter: brightness(70%);
+            filter: brightness(120%);
         }
 
         .changeLocation-btn:active {
-            filter: brightness(120%);
+            filter: brightness(70%);
         }
 
     .downArrow {
@@ -87,31 +95,86 @@
 
 
     #photo {
+        height: 10%;
         transform: translate(330px, 110px);
         border-radius: 5px;
-        filter: brightness(80%);
+        filter: brightness(70%);
         transition: filter .4s;
     }
 
         #photo:hover {
-            filter: brightness(65%);
+            filter: brightness(100%);
         }
 
         #photo:active {
-            filter: brightness(100%);
+            filter: brightness(55%);
         }
 </style>
 
 <body>
-    <div class="dialog" name="dialog">
-        <p class="dialog-message">Photo</p>
-        <div class="buttons">
-            <button onclick="takeItem(true)" class="click-btn">Взять</button>
-            <button onclick="takeItem(false)" class="click-btn">Оставить</button>
+    <img src="img/PilotCabin/photo.png" id="photo" onclick="showDialog(1)">
+    <div class="dialog" id="dialog">
+        <p class="dialog-message" id="dialog-msg"></p>
+        <div class="buttons" id="buttons">
+            <button onclick="takeItem()" class="click-btn">Взять</button>
+            <button onclick="hideDialog()" class="click-btn">Оставить</button>
         </div>
     </div>
-    <button name="changeLocation-btn" class="changeLocation-btn">
-        <img src="/images/ForAll/downArrow.png" class="downArrow">
+    <button name="changeLocation-btn" class="changeLocation-btn" asp-action="GoBack">
+        <img src="img/ForAll/downArrow.png" class="downArrow">
     </button>
-    <img src="/images/PilotCabin/photo.png" id="photo">
 </body>
+
+<script>
+    let id = 0;
+
+    async function showDialog(itemId) {
+        id = itemId;
+        try {
+            const response = await fetch(`/PilotCabin/GetDescription/${id}`);
+            if (!response.ok) throw new Error('Ошибка сервера: ' + response.status);
+
+            const description = await response.text();
+            document.getElementById('dialog-msg').textContent = description;
+            document.getElementById('dialog').style.display = 'block';
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Не удалось получить описание: ' + error.message);
+        }
+    }
+
+    function hideDialog() {
+        document.getElementById('dialog').style.display = 'none';
+        id = 0;
+    }
+
+    async function takeItem() {
+        if (!id) return;
+
+        try {
+            const response = await fetch(`/PilotCabin/TakeItem/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error(await response.text());
+
+            const result = await response.json();
+
+            if (result.success) {
+                document.getElementById('photo').style.display = 'none';
+                document.getElementById('buttons').style.display = 'none';
+                document.getElementById('dialog-msg').textContent = result.message;
+                setTimeout(hideDialog, 2000);
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Не удалось взять предмет: ' + error.message);
+        }
+    }
+</script>

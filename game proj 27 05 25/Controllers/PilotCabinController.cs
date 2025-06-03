@@ -7,49 +7,64 @@ namespace game_proj_27_05_25.Controllers
 {
     public class PilotCabinController : Controller
     {
-        Photo photo;
-        List<Item> items;
+        Photo photo = null;
+        List<Item> items = null;
         private const string SessionKey = "PilotCabinItems";
-        [Route("/PilotCabin")]
-        [HttpGet]
+
+        [HttpGet("/PilotCabin")]
         public IActionResult PilotCabin()
         {
             items = HttpContext.Session.Get<List<Item>>(SessionKey);
-            if (items == null || items.Count == 0)
+            if (items == null)
             {
                 items = PilotCabinDefault();
-            }
-            else
-            {
-                var photoItem = items.FirstOrDefault(items => items.Id == 1);
-                photo = new Photo(photoItem.WasFound, photoItem.WasUsed);
+                HttpContext.Session.Set(SessionKey, items);
             }
             return View(items);
         }
-        [Route("/PilotCabin")]
-        [HttpPost]
-        public IActionResult Interact()
+
+        [HttpGet("/PilotCabin/GetDescription/{id}")]
+        public IActionResult GetDescription(int id)
         {
             items = HttpContext.Session.Get<List<Item>>(SessionKey);
-            if (items == null || items.Count == 0)
+            var item = items?.FirstOrDefault(i => i.Id == id);
+
+            if(item == null)
             {
-                return NotFound();
+                return NotFound(new { error = "Ошибка, такого элемента нет" });
             }
-            return View();
+            else return Ok(item.Description);
+        }
+
+        [HttpPost("/PilotCabin/TakeItem/{id}")]
+        public IActionResult TakeItem(int id)
+        {
+            items = HttpContext.Session.Get<List<Item>>(SessionKey);
+            var item = items?.FirstOrDefault(i => i.Id == id);
+            if (item == null)
+            {
+                return NotFound(new { success = false, message = "Ошибка, такого предмета нет" });
+            }
+
+            item.WasFound = true;
+            HttpContext.Session.Set(SessionKey, items);
+
+            return Ok(new { success = true, message = $"Вы взяли: {item.Name}", itemId = id });
         }
 
         private List<Item> PilotCabinDefault()
         {
             photo = new Photo();
-            var items = new List<Item>
+            items = new List<Item>
             {
                 new Item
                 {
                     Id = 1,
-                    Name = "photo",
+                    Name = "Фотография двух девушек в форме",
                     Interaction = InteractionType.PickupDialog,
                     WasFound = photo.WasFound,
-                    WasUsed = photo.WasUsed
+                    WasUsed = photo.WasUsed,
+                    Description = "Странная фотография с изображениеv двух девушек в форме. Интересно, они как-то связаны с этим местом?"
                 }
             };
 

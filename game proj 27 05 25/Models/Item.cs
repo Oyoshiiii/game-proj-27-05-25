@@ -8,6 +8,7 @@
         public bool IsInteracted { get; set; }
         public bool WasFound { get; set; }
         public bool WasUsed { get; set; }
+        public string Description { get; set; } = "";
     }
 
     public enum InteractionType
