@@ -11,6 +11,12 @@ namespace game_proj_27_05_25.Controllers
         List<Item> items = null;
         private const string SessionKey = "PilotCabinItems";
 
+        [Route("/")]
+        public IActionResult Default()
+        {
+            return RedirectToAction("PilotCabin");
+        }
+
         [HttpGet("/PilotCabin")]
         public IActionResult PilotCabin()
         {
