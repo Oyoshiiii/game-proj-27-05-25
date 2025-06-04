@@ -112,6 +112,7 @@
 </style>
 
 <body>
+    <!--если фото не найдено - отображать его-->
     @if (!ViewBag.PhotoFound)
     {
         <img src="/img/PilotCabin/photo.png" id="photo" onclick="showDialog(1)">
@@ -130,16 +131,16 @@
 
 <script>
     let id = 0;
-
+    //переход в коридор-холл
     function goBack() {
         try {
             window.location.href = '/PilotCabin/GoBack';
         }
         catch (error) {
-            alert('Не удалось перейти на другую локаицию. ' + error.message);
+            alert('Не удалось перейти на другую локацию: ' + error.message);
         }
     }
-
+    //показывать окно при нажатии на предмет
     async function showDialog(itemId) {
         id = itemId;
         try {
@@ -154,12 +155,12 @@
             alert('Не удалось получить описание: ' + error.message);
         }
     }
-
+    //прятать окно после нахождения предмета
     function hideDialog() {
         document.getElementById('dialog').style.display = 'none';
         id = 0;
     }
-
+    //брать предмет
     async function takeItem() {
         if (!id) return;
 
@@ -186,7 +187,6 @@
             }
         } 
         catch (error) {
-            console.error('Ошибка:', error);
             alert('Не удалось взять предмет: ' + error.message);
         }
     }

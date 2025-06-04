@@ -1,2 +1,183 @@
-﻿@page
+﻿@using game_proj_27_05_25.Models;
 
+<style>
+    @@font-face {
+        font-family: Hero;
+        font-weight: 700;
+        src: url("fonts/ofont.ru_Hero.ttf");
+    }
+
+    body {
+        background-image: url('img/Hall/Hall.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+    }
+
+    html, body {
+        overflow: hidden;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .dialog {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(73, 73, 103, 0.8);
+        padding: 30px;
+        border: none;
+        border-radius: 20px;
+        z-index: 1000;
+        font-family: Hero;
+    }
+
+    .dialog-message {
+        background-color: rgba(186, 186, 186, 0.74);
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .changeLocation-btn {
+        position: absolute;
+        top: 90%;
+        left: 45%;
+        background-color: transparent;
+        border: none;
+        filter: brightness(90%);
+        transition: filter .4s;
+    }
+
+        .changeLocation-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .changeLocation-btn:active {
+            filter: brightness(70%);
+        }
+
+    .downArrow {
+        height: 50px;
+    }
+
+    .changeLocationRight-btn {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        background-color: transparent;
+        border: none;
+        transition: filter .4s;
+    }
+
+        .changeLocationRight-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .changeLocationRight-btn:active {
+            filter: brightness(70%);
+        }
+
+    .changeLocationLeft-btn {
+        position: absolute;
+        top: 70%;
+        left: 10%;
+        background-color: transparent;
+        border: none;
+        transition: filter .4s;
+    }
+
+        .changeLocationLeft-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .changeLocationLeft-btn:active {
+            filter: brightness(70%);
+        }
+
+    .nextArrow {
+        height: 50px;
+    }
+</style>
+
+<body>
+    @if (ViewBag.LaboratoryCardFound)
+    {
+        <button class="changeLocationLeft-btn" onclick="goLeft()">
+            <img src="img/ForAll/nextArrowLeft.png" class="nextArrow">
+        </button>
+    }
+    <button class="changeLocationRight-btn" onclick="goRight()">
+        <img src="img/ForAll/nextArrowRight.png" class="nextArrow">
+    </button>
+    <button name="changeLocation-btn" class="changeLocation-btn" onclick="goBack()">
+        <img src="img/ForAll/downArrow.png" class="downArrow">
+    </button>
+    <div class="dialog" id="dialog">
+        <p class="dialog-message" id="dialog-msg">Вы использовали карту от лаборатории</p>
+    </div>
+</body>
+
+<script>
+    //при нажатии goLeft отображается диалоговое окно "вы использовали карту лаборатории", если !ViewBag.LaboratoryCardUsed, 
+    // после оно меняется на true и не отображается больше
+    async function goLeft() {
+        if (!@Json.Serialize(ViewBag.LaboratoryCardUsed)) {
+            document.getElementById('dialog').style.display = 'block';
+            try {
+                const response = await fetch('/Hall/UseCard', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                setTimeout(() => {
+                    hideDialog();
+                    window.location.href = '/Hall/GoLeft'; 
+                }, 2000);
+            }
+            catch (error) {
+                hideDialog();
+                alert('Ошибка при использовании карты: ' + error.message);
+            }
+        }
+        else {
+            try {
+                window.location.href = '/Hall/GoLeft';
+            }
+            catch (error) {
+                alert('Не удалось перейти на другую локацию: ' + error.message);
+            }
+        }
+    }
+
+    //прятать окно после нахождения предмета
+    function hideDialog() {
+        document.getElementById('dialog').style.display = 'none';
+    }
+
+    //переход в кладовую
+    function goRight(){
+        try {
+            window.location.href = '/Hall/GoRight';
+        }
+        catch (error) {
+            alert('Не удалось перейти на другую локацию: ' + error.message);
+        }
+    }
+
+    //возвращение в кабину пилота
+    function goBack(){
+        try {
+            window.location.href = '/Hall/GoBack';
+        }
+        catch (error) {
+            alert('Не удалось перейти на другую локацию: ' + error.message);
+        }
+    }
+</script>

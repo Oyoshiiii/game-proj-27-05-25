@@ -13,6 +13,10 @@ app.UseSession();
 
 app.Run();
 
+app.Map("/", () => {
+    return Results.Redirect("/PilotCabin");
+});
+
 public static class SessionExtensions
 {
     public static void Set<T>(this ISession session, string key, T value)

@@ -10,11 +10,5 @@
             WasFound = false;
             WasUsed = false;
         }
-        //конструктор для продолжения игры, данные берутся из сессии
-        public Photo(bool WasFound, bool WasUsed)
-        {
-            this.WasFound = WasFound;
-            this.WasUsed = WasUsed;
-        }
     }
 }
