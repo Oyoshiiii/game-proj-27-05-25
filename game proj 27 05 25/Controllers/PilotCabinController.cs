@@ -54,6 +54,12 @@ namespace game_proj_27_05_25.Controllers
             return Ok(new { success = true, message = $"Вы взяли: {item.Name}", itemId = id });
         }
 
+        [HttpGet("/PilotCabin/GoBack")]
+        public IActionResult GoBack()
+        {
+            return Redirect("/Hall");
+        }
+
         private List<Item> PilotCabinDefault()
         {
             photo = new Photo();
@@ -63,10 +69,9 @@ namespace game_proj_27_05_25.Controllers
                 {
                     Id = 1,
                     Name = "Фотография двух девушек в форме",
-                    Interaction = InteractionType.PickupDialog,
                     WasFound = photo.WasFound,
                     WasUsed = photo.WasUsed,
-                    Description = "Странная фотография с изображениеv двух девушек в форме. Интересно, они как-то связаны с этим местом?"
+                    Description = "Странная фотография с изображением двух девушек в форме. Интересно, они как-то связаны с этим местом?"
                 }
             };
 

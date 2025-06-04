@@ -123,7 +123,7 @@
             <button onclick="hideDialog()" class="click-btn">Оставить</button>
         </div>
     </div>
-    <button name="changeLocation-btn" class="changeLocation-btn" asp-action="GoBack">
+    <button name="changeLocation-btn" class="changeLocation-btn" onclick="goBack()">
         <img src="img/ForAll/downArrow.png" class="downArrow">
     </button>
 </body>
@@ -131,17 +131,26 @@
 <script>
     let id = 0;
 
+    function goBack() {
+        try {
+            window.location.href = '/PilotCabin/GoBack';
+        }
+        catch (error) {
+            alert('Не удалось перейти на другую локаицию. ' + error.message);
+        }
+    }
+
     async function showDialog(itemId) {
         id = itemId;
         try {
             const response = await fetch(`/PilotCabin/GetDescription/${id}`);
-            if (!response.ok) throw new Error('Ошибка сервера: ' + response.status);
+            if (!response.ok) throw new Error('Ошибка: ' + response.status);
 
             const description = await response.text();
             document.getElementById('dialog-msg').textContent = description;
             document.getElementById('dialog').style.display = 'block';
-        } catch (error) {
-            console.error('Ошибка:', error);
+        } 
+        catch (error) {
             alert('Не удалось получить описание: ' + error.message);
         }
     }
@@ -175,7 +184,8 @@
             } else {
                 alert(result.message);
             }
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Ошибка:', error);
             alert('Не удалось взять предмет: ' + error.message);
         }

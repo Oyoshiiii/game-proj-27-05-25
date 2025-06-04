@@ -4,16 +4,8 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";
-        public InteractionType Interaction { get; set; } 
-        public bool IsInteracted { get; set; }
         public bool WasFound { get; set; }
         public bool WasUsed { get; set; }
         public string Description { get; set; } = "";
-    }
-
-    public enum InteractionType
-    {
-        SimpleAction, //просто кликабельные объекты
-        PickupDialog  //объекты с диалоговым окном, которые можно поднять
     }
 }

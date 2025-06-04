@@ -6,7 +6,7 @@ namespace game_proj_27_05_25.Controllers
     public class HallController : Controller
     {
         private const string SessionKey = "HallItems";
-        [Route("/hall")]
+        [Route("/Hall")]
         [HttpGet]
         public IActionResult Hall()
         {
