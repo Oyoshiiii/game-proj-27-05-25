@@ -112,7 +112,10 @@
 </style>
 
 <body>
-    <img src="img/PilotCabin/photo.png" id="photo" onclick="showDialog(1)">
+    @if (!ViewBag.PhotoFound)
+    {
+        <img src="/img/PilotCabin/photo.png" id="photo" onclick="showDialog(1)">
+    }
     <div class="dialog" id="dialog">
         <p class="dialog-message" id="dialog-msg"></p>
         <div class="buttons" id="buttons">

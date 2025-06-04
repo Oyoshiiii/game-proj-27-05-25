@@ -20,6 +20,8 @@ namespace game_proj_27_05_25.Controllers
                 items = PilotCabinDefault();
                 HttpContext.Session.Set(SessionKey, items);
             }
+            var photo = items.FirstOrDefault(i => i.Id == 1);
+            ViewBag.PhotoFound = photo.WasFound;
             return View(items);
         }
 
