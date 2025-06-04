@@ -31,7 +31,7 @@ namespace game_proj_27_05_25.Controllers
                 {
                     Id = 1,
                     Name = "Ключ-карта от лаборатории",
-                    WasFound = true, //для проверки диалогового окна
+                    WasFound = labCard.WasFound,
                     WasUsed = labCard.WasUsed,
                     Description = "Ключ-карта от лаборатории. Вроде бы она должна быть в холле слева.."
                 },

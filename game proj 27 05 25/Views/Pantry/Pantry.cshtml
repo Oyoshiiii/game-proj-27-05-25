@@ -1,2 +1,154 @@
 ﻿@model IEnumerable<game_proj_27_05_25.Models.Item>
 @using game_proj_27_05_25.Models;
+
+<style>
+    @@font-face {
+        font-family: Hero;
+        font-weight: 700;
+        src: url("fonts/ofont.ru_Hero.ttf");
+    }
+
+    body {
+        background-image: url('img/Pantry/Pantry.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+    }
+
+    html, body {
+        overflow: hidden;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .dialog {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(73, 73, 103, 0.8);
+        padding: 30px;
+        border: none;
+        border-radius: 20px;
+        z-index: 1000;
+        font-family: Hero;
+    }
+
+    .click-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: rgba(186, 186, 186, 0.59);
+        transition: filter .4s;
+        font-family: Hero;
+    }
+
+        .click-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .click-btn:active {
+            filter: brightness(70%);
+        }
+
+    .buttons {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 20px;
+    }
+
+    .dialog-message {
+        background-color: rgba(186, 186, 186, 0.74);
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .changeLocation-btn {
+        position: absolute;
+        top: 90%;
+        left: 45%;
+        background-color: transparent;
+        border: none;
+        transition: filter .4s;
+    }
+
+        .changeLocation-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .changeLocation-btn:active {
+            filter: brightness(70%);
+        }
+
+    .downArrow {
+        height: 50px;
+    }
+
+    #photoframe{
+        height: 30px;
+    }
+
+    .photoframe-btn {
+        position: absolute;
+        background-color: transparent;
+        border: none;
+        transform: translate(635px, 335px);
+        transition: filter .4s;
+    }
+
+        .photoframe-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .photoframe-btn:active {
+            filter: brightness(70%);
+        }
+</style>
+
+<body>
+    <button class="photoframe-btn" onclick="lookPhotoframe()">
+        <img src="img/Pantry/photoFrame.png" id="photoframe">
+    </button>
+    <div class="dialog" id="dialog">
+        <p class="dialog-message" id="dialog-msg"></p>
+        <div class="buttons" id="buttons">
+            <button onclick="useItem()" class="click-btn">Использовать</button>
+            <button onclick="hideDialog()" class="click-btn">Оставить</button>
+        </div>
+    </div>
+    <button name="changeLocation-btn" class="changeLocation-btn" onclick="goBack()">
+        <img src="img/ForAll/downArrow.png" class="downArrow">
+    </button>
+</body>
+
+<script>
+    //если у игрока есть фотография, то он сможет ее поставить в рамку, 
+    // а после получить ключ от лаборатории, который вывалится из рамки после помещения фото
+    function lookPhotoframe(){
+        //если нет фото - отобразится диалоговое окно с описанием и подсказкой взять фото
+        //если есть - отобразятся и кнопки выбора
+    }
+    //воспользоваться фотографией и получить карту
+    function useItem(){
+
+    }
+    //спрятать диалоговое окно
+    function hideDialog(){
+
+    }
+    //вернуться в коридор-холл
+
+    function goBack() {
+        try {
+            window.location.href = '/Pantry/GoBack';
+        }
+        catch (error) {
+            alert('Не удалось перейти на другую локацию: ' + error.message);
+        }
+    }
+</script>
