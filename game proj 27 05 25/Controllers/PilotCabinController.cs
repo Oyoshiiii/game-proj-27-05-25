@@ -28,6 +28,7 @@ namespace game_proj_27_05_25.Controllers
             }
             var photo = items.FirstOrDefault(i => i.Id == 1);
             ViewBag.PhotoFound = photo.WasFound;
+            ViewBag.PhotoUsed = photo.WasUsed;
             return View(items);
         }
 

@@ -8,17 +8,42 @@ namespace game_proj_27_05_25.Controllers
         List<Item> items;
         FlashLight flashLight;
         LaboratoryCard labCard;
-        private const string SessionKey = "PantryItems";
+        private const string SessionKeyPantry = "PantryItems";
+        private const string SessionKeyPilotCabin = "PilotCabinItems";
         [Route("/Pantry")]
         public IActionResult Pantry()
         {
-            items = HttpContext.Session.Get<List<Item>>(SessionKey);
+            items = HttpContext.Session.Get<List<Item>>(SessionKeyPantry);
             if (items == null)
             {
                 items = PantryDefault();
-                HttpContext.Session.Set(SessionKey, items);
+                HttpContext.Session.Set(SessionKeyPantry, items);
+            }
+
+            var pcItems = HttpContext.Session.Get<List<Item>>(SessionKeyPilotCabin);
+            var photo = pcItems.FirstOrDefault(i => i.Id == 1);
+            //тоже самое на фонарик еще сделать надо, его найдут на кровати за подушкой
+            //(поверх нее сделать кнопку чуть высветленную или попытаться вырезать аккуратно подушку)
+            //после нажатия просто перед подушкой появится небольшой фонарик - будто его вытащили из-под нее
+            //и уже тогда на сам фонарик можно будет нажать и подобрать
+
+            if (photo != null)
+            {
+                ViewBag.PhotoFound = photo.WasFound;
+                ViewBag.PhotoUsed = photo.WasUsed;
+            }
+            else
+            {
+                ViewBag.PhotoFound = false;
+                ViewBag.PhotoUsed = false;
             }
             return View(items);
+        }
+
+        [HttpGet("/Pantry/GoBack")]
+        public IActionResult GoBack()
+        {
+            return Redirect("/Hall");
         }
 
         private List<Item> PantryDefault()
@@ -44,7 +69,7 @@ namespace game_proj_27_05_25.Controllers
                 }
             };
 
-            HttpContext.Session.Set(SessionKey, items);
+            HttpContext.Session.Set(SessionKeyPantry, items);
             return items;
         }
     }

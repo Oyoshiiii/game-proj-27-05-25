@@ -116,8 +116,12 @@
     </button>
     <div class="dialog" id="dialog">
         <p class="dialog-message" id="dialog-msg"></p>
-        <div class="buttons" id="buttons">
+        <div class="buttons" id="buttonsUse">
             <button onclick="useItem()" class="click-btn">Использовать</button>
+            <button onclick="hideDialog()" class="click-btn">Оставить</button>
+        </div>
+        <div class="buttons" id="buttonsTake">
+            <button onclick="takeItem()" class="click-btn">Взять</button>
             <button onclick="hideDialog()" class="click-btn">Оставить</button>
         </div>
     </div>
@@ -127,11 +131,25 @@
 </body>
 
 <script>
+    let id = 0;
     //если у игрока есть фотография, то он сможет ее поставить в рамку, 
     // а после получить ключ от лаборатории, который вывалится из рамки после помещения фото
     function lookPhotoframe(){
         //если нет фото - отобразится диалоговое окно с описанием и подсказкой взять фото
         //если есть - отобразятся и кнопки выбора
+        id = 1;
+        if (@Json.Serialize(ViewBag.PhotoFound)) {
+            document.getElementById("dialog").style.display = "block";
+            document.getElementById("buttonsTake").style.display = "none";
+            document.getElementById("dialog-msg").textContent = "Внутри рамки написаны имена 'Лилит Итоу' и 'Алина Сео'. Возможно, на той фотографии были они. Поставить фотографию в рамку?";
+        }
+        else{
+            document.getElementById("dialog").style.display = "block";
+            document.getElementById("buttonsTake").style.display = "none";
+            document.getElementById("buttonsUse").style.display = "none";
+            document.getElementById("dialog-msg").textContent = "Внутри рамки написаны имена 'Лилит Итоу' и 'Алина Сео'. Вроде в кабине пилота висела какая-то фотография";
+            setTimeout(hideDialog, 5000);
+        }
     }
     //воспользоваться фотографией и получить карту
     function useItem(){
@@ -139,7 +157,8 @@
     }
     //спрятать диалоговое окно
     function hideDialog(){
-
+        document.getElementById('dialog').style.display = 'none';
+        id = 0;
     }
     //вернуться в коридор-холл
 
