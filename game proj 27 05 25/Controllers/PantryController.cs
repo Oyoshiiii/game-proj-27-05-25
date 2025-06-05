@@ -17,7 +17,6 @@ namespace game_proj_27_05_25.Controllers
             if (items == null)
             {
                 items = PantryDefault();
-                HttpContext.Session.Set(SessionKeyPantry, items);
             }
 
             var pcItems = HttpContext.Session.Get<List<Item>>(SessionKeyPilotCabin);
@@ -26,7 +25,7 @@ namespace game_proj_27_05_25.Controllers
             //(поверх нее сделать кнопку чуть высветленную или попытаться вырезать аккуратно подушку)
             //после нажатия просто перед подушкой появится небольшой фонарик - будто его вытащили из-под нее
             //и уже тогда на сам фонарик можно будет нажать и подобрать
-
+            //и с картой от лаборатории тоже
             if (photo != null)
             {
                 ViewBag.PhotoFound = photo.WasFound;
@@ -38,6 +37,35 @@ namespace game_proj_27_05_25.Controllers
                 ViewBag.PhotoUsed = false;
             }
             return View(items);
+        }
+
+        [HttpGet("Pantry/GetDescription/{id}")]
+        public IActionResult GetDescription(int id)
+        {
+            items = HttpContext.Session.Get<List<Item>>(SessionKeyPantry);
+            var item = items?.FirstOrDefault(i => i.Id == id);
+
+            if (item == null)
+            {
+                return NotFound(new { error = "Ошибка, такого элемента нет" });
+            }
+            else return Ok(item.Description);
+        }
+
+        [HttpPost("/Pantry/TakeItem{id}")]
+        public IActionResult TakeItem(int id)
+        {
+            items = HttpContext.Session.Get<List<Item>>(SessionKeyPantry);
+            var item = items?.FirstOrDefault(i => i.Id == id);
+            if (item == null)
+            {
+                return NotFound(new { success = false, message = "Ошибка, такого предмета нет" });
+            }
+
+            item.WasFound = true;
+            HttpContext.Session.Set(SessionKeyPantry, items);
+
+            return Ok(new { success = true, message = $"Вы взяли: {item.Name}", itemId = id });
         }
 
         [HttpGet("/Pantry/GoBack")]
