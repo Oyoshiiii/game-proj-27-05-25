@@ -52,7 +52,7 @@ namespace game_proj_27_05_25.Controllers
             else return Ok(item.Description);
         }
 
-        [HttpPost("/Pantry/TakeItem{id}")]
+        [HttpPost("/Pantry/TakeItem/{id}")]
         public IActionResult TakeItem(int id)
         {
             items = HttpContext.Session.Get<List<Item>>(SessionKeyPantry);
