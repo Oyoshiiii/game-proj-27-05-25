@@ -137,22 +137,39 @@
 
     #flashlight{
         display: none;
+        height: 25px;
+        filter: brightness(120%);
     }
     
     .flashlight-btn {
         position: absolute;
         background-color: transparent;
         border: none;
-        transform: translate(630px, 355px);
+        transform: translate(895px, 235px);
         transition: filter .4s;
     }
 
         .flashlight-btn:hover {
-            filter: brightness(120%);
+            filter: brightness(160%);
         }
 
         .flashlight-btn:active {
             filter: brightness(70%);
+        }
+
+    #pillow {
+        filter: brightness(120%);
+        transform: translate(805px, 185px);
+        height: 65px;
+        transition: filter .4s;
+    }
+
+        #pillow:hover {
+            filter: brightness(140%);
+        }
+
+        #pillow:active {
+            filter: brightness(100%);
         }
 </style>
 
@@ -173,6 +190,7 @@
     <button class="flashlight-btn" onclick="lookFlashlight()">
         <img src="img/Pantry/flashlight.png" id="flashlight">
     </button>
+    <img src="img/Pantry/pillow.png" id="pillow" onclick="showFlashlight()">
     <!--диалоговые окна-->
     <div class="dialog" id="dialog">
         <p class="dialog-message" id="dialog-msg"></p>
@@ -218,6 +236,16 @@
     function lookLabCard() {
         id = 1;
         getDescription(id);
+    }
+    //показать фонарик
+    function showFlashlight() {
+        document.getElementById("dialog").style.display = "block";
+        document.getElementById("buttonsTake").style.display = "none";
+        document.getElementById("buttonsUse").style.display = "none";
+        document.getElementById("dialog-msg").textContent = "За подушкой лежал какой-то модуль для реплик, похожий на фонарик";
+        setTimeout(hideDialog, 3000);
+        document.getElementById('flashlight').style.display = "block";
+        document.getElementById('pillow').style.display = "none";
     }
     //при нажатии на фонарик
     function lookFlashlight() {
