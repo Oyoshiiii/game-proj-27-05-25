@@ -91,7 +91,6 @@
 
     #photoframeWithPhoto{
         height: 30px;
-        display: none;
     }
 
     #photoframe{
@@ -116,7 +115,6 @@
 
     #labCard {
         height: 20px;
-        display: none;
     }
 
     .labCard-btn {
@@ -174,23 +172,35 @@
 </style>
 
 <body>
-    <!--для рамки-->
-    <button class="photoframe-btn" onclick="lookPhotoframe()">
-        <img src="img/Pantry/photoFrame.png" id="photoframe">
-    </button>
-    <!--для рамки с фото-->
-    <button class="photoframe-btn" onclick="lookPhotoframeWithPhoto()">
-        <img src="img/Pantry/photoFrameWithPhoto.png" id="photoframeWithPhoto">
-    </button>
-    <!--для карты лаборатории-->
-    <button class="labCard-btn" onclick="lookLabCard()" id="labCard-btn">
-        <img src="img/Pantry/labCard.png" id="labCard">
-    </button>
-    <!--для фонарика-->
-    <button class="flashlight-btn" onclick="lookFlashlight()">
-        <img src="img/Pantry/flashlight.png" id="flashlight">
-    </button>
-    <img src="img/Pantry/pillow.png" id="pillow" onclick="showFlashlight()">
+    @if (!ViewBag.PhotoUsed)
+    {
+        <!--для рамки-->
+        <button class="photoframe-btn" onclick="lookPhotoframe()">
+            <img src="img/Pantry/photoFrame.png" id="photoframe">
+        </button>
+    }
+    else
+    {
+        <!--для рамки с фото-->
+        <button class="photoframe-btn" onclick="lookPhotoframeWithPhoto()">
+            <img src="img/Pantry/photoFrameWithPhoto.png" id="photoframeWithPhoto">
+        </button>
+    }
+    @if (!ViewBag.LaboratoryCardFound && ViewBag.PhotoUsed)
+    {
+        <!--для карты лаборатории-->
+        <button class="labCard-btn" onclick="lookLabCard()" id="labCard-btn">
+            <img src="img/Pantry/labCard.png" id="labCard">
+        </button>
+    }
+    @if (!ViewBag.FlashlightFound)
+    {
+        <!--для фонарика-->
+        <button class="flashlight-btn" onclick="lookFlashlight()">
+            <img src="img/Pantry/flashlight.png" id="flashlight">
+        </button>
+        <img src="img/Pantry/pillow.png" id="pillow" onclick="showFlashlight()">
+    }
     <!--диалоговые окна-->
     <div class="dialog" id="dialog">
         <p class="dialog-message" id="dialog-msg"></p>
@@ -270,13 +280,37 @@
         }
     }
     //воспользоваться фотографией и получить карту
-    function useItem() {
-        document.getElementById("buttonsUse").style.display = "none";
-        document.getElementById("photoframeWithPhoto").style.display = "block";
-        document.getElementById("photoframe").style.display = "none";
-        document.getElementById("labCard").style.display = "block";
-        document.getElementById("dialog-msg").textContent = "Из рамки что-то выпало на пол";
-        setTimeout(hideDialog, 2000);
+    async function useItem() {
+        try {
+            const response = await fetch(`/Pantry/UseItem`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error(await response.text());
+
+            const result = await response.json();
+
+            if (result.success) {
+                await reloadPantryView();
+                document.getElementById("buttonsUse").style.display = "none";
+                document.getElementById("labCard").style.display = "block";
+                document.getElementById('dialog').style.display = 'block';
+                document.getElementById("buttonsTake").style.display = "none";
+                document.getElementById("buttonsUse").style.display = "none";
+                document.getElementById("dialog-msg").textContent = "Из рамки что-то выпало на пол";
+                setTimeout(hideDialog, 2000);
+            } else {
+                alert(result.message);
+            }
+        }
+        catch (error) {
+            alert('Не удалось использовать предмет: ' + error.message);
+        }
+        
     }
     //взять предмет
     async function takeItem() {
@@ -327,6 +361,15 @@
         }
         catch (error) {
             alert('Не удалось перейти на другую локацию: ' + error.message);
+        }
+    }
+    async function reloadPantryView() {
+        try {
+            const response = await fetch('/Pantry');
+            const html = await response.text();
+            document.body.innerHTML = html;
+        } catch (error) {
+            alert('Ошибка при обновлении страницы:', error);
         }
     }
 </script>

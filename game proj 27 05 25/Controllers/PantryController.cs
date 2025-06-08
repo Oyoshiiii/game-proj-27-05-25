@@ -19,6 +19,14 @@ namespace game_proj_27_05_25.Controllers
                 items = PantryDefault();
             }
 
+            var labCard = items.FirstOrDefault(i => i.Id == 1);
+            ViewBag.LaboratoryCardFound = labCard.WasFound;
+            ViewBag.LaboratoryCardUsed = labCard.WasUsed;
+
+            var flashlight = items.FirstOrDefault(i => i.Id == 2);
+            ViewBag.FlashlightFound = flashlight.WasFound;
+            ViewBag.FlashlightUsed = flashlight.WasUsed;
+
             var pcItems = HttpContext.Session.Get<List<Item>>(SessionKeyPilotCabin);
             var photo = pcItems.FirstOrDefault(i => i.Id == 1);
             //тоже самое на фонарик еще сделать надо, его найдут на кровати за подушкой
@@ -65,7 +73,34 @@ namespace game_proj_27_05_25.Controllers
             item.WasFound = true;
             HttpContext.Session.Set(SessionKeyPantry, items);
 
+            switch (id)
+            {
+                case 1:
+                    ViewBag.LaboratoryCardFound = item.WasFound;
+                    var pcItems = HttpContext.Session.Get<List<Item>>(SessionKeyPilotCabin);
+                    var photo = pcItems.FirstOrDefault(i => i.Id == 1);
+                    photo.WasUsed = true;
+                    ViewBag.PhotoUsed = photo.WasUsed;
+                    HttpContext.Session.Set(SessionKeyPilotCabin, pcItems);
+                    break;
+                case 2:
+                    ViewBag.FlashlightFound = item.WasFound;
+                    break;
+            }
+
             return Ok(new { success = true, message = $"Вы взяли: {item.Name}", itemId = id });
+        }
+
+        [HttpPost("/Pantry/UseItem")]
+        public IActionResult UseItem()
+        {
+            var pcItems = HttpContext.Session.Get<List<Item>>(SessionKeyPilotCabin);
+            var photo = pcItems.FirstOrDefault(i => i.Id == 1);
+            photo.WasUsed = true;
+            ViewBag.PhotoUsed = photo.WasUsed;
+            HttpContext.Session.Set(SessionKeyPilotCabin, pcItems);
+
+            return Ok(new { success = true, message = $"Вы использовали: {photo.Name}", itemId = 1 });
         }
 
         [HttpGet("/Pantry/GoBack")]
