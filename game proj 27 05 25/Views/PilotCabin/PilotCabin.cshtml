@@ -127,7 +127,34 @@
 
 <script>
     let id = 0;
+    let k = 0
     //переход в коридор-холл
+    async function whatHappened() {
+        if (@ViewBag.Start == 0) {
+            if (k == 0) {
+                document.getElementById('dialog-msg').textContent = "Похоже, корабль разбился.. и к сожалению, я не помню, как тут оказалась";
+                document.getElementById('dialog').style.display = 'block';
+                document.getElementById('buttons').style.display = 'none';
+                setTimeout(hideDialog, 3000);
+            }
+            if (k == 1) {
+                document.getElementById('dialog-msg').textContent = "Нужно осмотреть все и выбраться.. что-то мне подсказывает, что я должна кого-то найти";
+                document.getElementById('dialog').style.display = 'block';
+                document.getElementById('buttons').style.display = 'none';
+                setTimeout(hideDialog, 5000);
+            }
+            if ( k == 2 ) {
+
+                try {
+                    const response = await fetch(`/PilotCabin/Start`);
+                    if (!response.ok) throw new Error('Ошибка: ' + response.status);
+                }
+                catch (error) {
+                    alert('Не удалось получить описание старта: ' + error.message);
+                }
+            }
+        }
+    }
     function goBack() {
         try {
             window.location.href = '/PilotCabin/GoBack';
@@ -155,6 +182,14 @@
     function hideDialog() {
         document.getElementById('dialog').style.display = 'none';
         id = 0;
+        if (@ViewBag.Start == 0 && k == 0) {
+            k = 1;
+            whatHappened();
+        }
+        if (@ViewBag.Start == 0 && k == 1) {
+            k = 2;
+            whatHappened();
+        }
     }
     //брать предмет
     async function takeItem() {
@@ -186,4 +221,6 @@
             alert('Не удалось взять предмет: ' + error.message);
         }
     }
+
+    whatHappened();
 </script>

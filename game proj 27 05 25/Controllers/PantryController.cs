@@ -78,6 +78,7 @@ namespace game_proj_27_05_25.Controllers
                 case 1:
                     ViewBag.LaboratoryCardFound = item.WasFound;
                     var pcItems = HttpContext.Session.Get<List<Item>>(SessionKeyPilotCabin);
+
                     var photo = pcItems.FirstOrDefault(i => i.Id == 1);
                     photo.WasUsed = true;
                     ViewBag.PhotoUsed = photo.WasUsed;

@@ -2,6 +2,7 @@
 using game_proj_27_05_25.Models;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
+using System.Globalization;
 
 namespace game_proj_27_05_25.Controllers
 {
@@ -9,7 +10,9 @@ namespace game_proj_27_05_25.Controllers
     {
         Photo photo = null;
         List<Item> items = null;
+        int start;
         private const string SessionKey = "PilotCabinItems";
+        private const string StartKey = "Start";
 
         [Route("/")]
         public IActionResult Default()
@@ -21,6 +24,11 @@ namespace game_proj_27_05_25.Controllers
         public IActionResult PilotCabin()
         {
             items = HttpContext.Session.Get<List<Item>>(SessionKey);
+            start = HttpContext.Session.Get<int>(StartKey);
+            if (start == null)
+            {
+                HttpContext.Session.Set("Start", start);
+            }
             if (items == null)
             {
                 items = PilotCabinDefault();
@@ -29,6 +37,7 @@ namespace game_proj_27_05_25.Controllers
             var photo = items.FirstOrDefault(i => i.Id == 1);
             ViewBag.PhotoFound = photo.WasFound;
             ViewBag.PhotoUsed = photo.WasUsed;
+            ViewBag.Start = start;
             return View(items);
         }
 
@@ -66,6 +75,16 @@ namespace game_proj_27_05_25.Controllers
         {
             return Redirect("/Hall");
         }
+
+        [HttpGet("/PilotCabin/Start")]
+        public IActionResult Start()
+        {
+            start = 2;
+            HttpContext.Session.Set(StartKey, start);
+            ViewBag.Start = start;
+            return Ok();
+        }
+
 
         private List<Item> PilotCabinDefault()
         {
