@@ -29,11 +29,6 @@ namespace game_proj_27_05_25.Controllers
 
             var pcItems = HttpContext.Session.Get<List<Item>>(SessionKeyPilotCabin);
             var photo = pcItems.FirstOrDefault(i => i.Id == 1);
-            //тоже самое на фонарик еще сделать надо, его найдут на кровати за подушкой
-            //(поверх нее сделать кнопку чуть высветленную или попытаться вырезать аккуратно подушку)
-            //после нажатия просто перед подушкой появится небольшой фонарик - будто его вытащили из-под нее
-            //и уже тогда на сам фонарик можно будет нажать и подобрать
-            //и с картой от лаборатории тоже
             if (photo != null)
             {
                 ViewBag.PhotoFound = photo.WasFound;

@@ -120,7 +120,7 @@
             <button onclick="hideDialog()" class="click-btn">Оставить</button>
         </div>
     </div>
-    <button name="changeLocation-btn" class="changeLocation-btn" onclick="goBack()">
+    <button class="changeLocation-btn" onclick="goBack()">
         <img src="img/ForAll/downArrow.png" class="downArrow">
     </button>
 </body>
@@ -173,6 +173,7 @@
             const description = await response.text();
             document.getElementById('dialog-msg').textContent = description;
             document.getElementById('dialog').style.display = 'block';
+            document.getElementById('buttons').style.display = 'flex';
         } 
         catch (error) {
             alert('Не удалось получить описание: ' + error.message);

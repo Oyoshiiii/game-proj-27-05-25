@@ -1,1 +1,250 @@
-﻿
+﻿@using game_proj_27_05_25.Models;
+
+<style>
+    @@font-face {
+        font-family: Hero;
+        font-weight: 700;
+        src: url("fonts/ofont.ru_Hero.ttf");
+    }
+
+    body {
+        background-image: url('img/Laboratory/Laboratory.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+    }
+
+    html, body {
+        overflow: hidden;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .click-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: rgba(186, 186, 186, 0.59);
+        transition: filter .4s;
+        font-family: Hero;
+    }
+
+        .click-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .click-btn:active {
+            filter: brightness(70%);
+        }
+
+    .buttons {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 20px;
+    }
+
+    .dialog {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(73, 73, 103, 0.8);
+        padding: 30px;
+        border: none;
+        border-radius: 20px;
+        z-index: 1000;
+        font-family: Hero;
+    }
+
+    .dialog-message {
+        background-color: rgba(186, 186, 186, 0.74);
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .changeLocation-btn {
+        position: absolute;
+        top: 90%;
+        left: 45%;
+        background-color: transparent;
+        border: none;
+        filter: brightness(90%);
+        transition: filter .4s;
+    }
+
+        .changeLocation-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .changeLocation-btn:active {
+            filter: brightness(70%);
+        }
+
+    .downArrow {
+        height: 50px;
+    }
+
+    .changeLocationUp-btn {
+        position: absolute;
+        top: 47%;
+        left: 43%;
+        background-color: transparent;
+        border: none;
+        filter: brightness(90%);
+        transition: filter .4s;
+    }
+
+        .changeLocationUp-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .changeLocationUp-btn:active {
+            filter: brightness(70%);
+        }
+
+    .upArrow {
+        height: 50px;
+    }
+
+    .changeLocationRight-btn {
+        position: absolute;
+        top: 65%;
+        left: 80%;
+        background-color: transparent;
+        border: none;
+        filter: brightness(90%);
+        transition: filter .4s;
+    }
+
+        .changeLocationRight-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .changeLocationRight-btn:active {
+            filter: brightness(70%);
+        }
+
+    .rightArrow {
+        height: 80px;
+    }
+
+</style>
+
+<body>
+    @if (ViewBag.FlashlightFound && ViewBag.FlashlightUsed)
+    {
+        <button class="changeLocationUp-btn" onclick="goUp()">
+            <img src="img/ForAll/upArrow.png" class="upArrow">
+        </button>
+    }
+    else
+    {
+        <button class="changeLocationUp-btn" onclick="goUpNotAllowd()">
+            <img src="img/ForAll/upArrowNotAllowd.png" class="upArrow">
+        </button>
+    }
+    <button class="changeLocation-btn" onclick="goBack()">
+        <img src="img/ForAll/downArrow.png" class="downArrow">
+    </button>
+    <button class="changeLocationRight-btn" onclick="goRight()">
+        <img src="img/ForAll/nextArrrowRightUp.png" class="rightArrow">
+    </button>
+    <div class="dialog" id="dialog">
+        <p class="dialog-message" id="dialog-msg"></p>
+        <div class="buttons" id="buttons">
+            <button onclick="useItem()" class="click-btn">Использовать</button>
+            <button onclick="hideDialog()" class="click-btn">Оставить</button>
+        </div>
+    </div>
+</body>
+
+<script>
+    function hideDialog() {
+        document.getElementById('dialog').style.display = 'none';
+    }
+    function goUpNotAllowd() {
+        if (@Json.Serialize(ViewBag.FlashlightFound) && !@Json.Serialize(ViewBag.FlashlightUsed)) {
+
+            document.getElementById('dialog').style.display = 'block';
+            document.getElementById('buttons').style.display = 'flex';
+            document.getElementById('dialog-msg').textContent = 'Использовать фонарик?';
+        }
+        else {
+            document.getElementById('dialog').style.display = 'block';
+            document.getElementById('buttons').style.display = 'none';
+            document.getElementById('dialog-msg').textContent = 'Я вижу дверь, но тут очень темно, я не дойду до неё. Быть может в той комнате был фонарик?';
+            setTimeout(hideDialog, 5000);
+        }
+    }
+    async function useItem() {
+        try {
+            const response = await fetch(`/Laboratory/UseItem`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error(await response.text());
+
+            const result = await response.json();
+
+            if (result.success) {
+                await reloadLaboratoryView();
+                document.body.style.backgroundImage = "url('img/Laboratory/LaboratoryWithLight.jpg')";
+                document.getElementById("buttons").style.display = "none";
+                document.getElementById('dialog').style.display = 'block';
+                document.getElementById("dialog-msg").textContent = result.message;
+                setTimeout(hideDialog, 3000);
+            } else {
+                alert("Ошибка");
+            }
+        }
+        catch (error) {
+            alert('Не удалось использовать предмет: ' + error.message);
+        }
+    }
+    function goRight() {
+        try {
+            window.location.href = '/Laboratory/goRight';
+        }
+        catch (error) {
+            alert('Не удалось перейти на другую локацию: ' + error.message);
+        }
+    }
+    function goUp(){
+        try {
+            window.location.href = '/Laboratory/GoUp';
+        }
+        catch (error) {
+            alert('Не удалось перейти на другую локацию: ' + error.message);
+        }
+    }
+    function goBack() {
+        try {
+            window.location.href = '/Laboratory/GoBack';
+        }
+        catch (error) {
+            alert('Не удалось перейти на другую локацию: ' + error.message);
+        }
+    }
+    async function reloadLaboratoryView() {
+        try {
+            const response = await fetch('/Laboratory');
+            const html = await response.text();
+            document.body.innerHTML = html;
+        } catch (error) {
+            alert('Ошибка при обновлении страницы:', error);
+        }
+    }
+
+    if (@Json.Serialize(ViewBag.FlashlightUsed)) {
+        document.body.style.backgroundImage = "url('img/Laboratory/LaboratoryWithLight.jpg')";
+    }
+</script>
