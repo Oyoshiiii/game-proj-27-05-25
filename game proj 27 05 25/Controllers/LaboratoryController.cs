@@ -39,7 +39,7 @@ namespace game_proj_27_05_25.Controllers
         [HttpGet("/Laboratory/GoUp")]
         public IActionResult GoUp()
         {
-            return Redirect("/EndOfPenrose");
+            return Redirect("/Hangar");
         }
         [HttpGet("/Laboratory/GoRight")]
         public IActionResult GoRight()

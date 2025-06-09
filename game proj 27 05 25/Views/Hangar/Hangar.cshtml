@@ -1,0 +1,276 @@
+﻿@using game_proj_27_05_25.Models;
+
+<style>
+    @@font-face {
+        font-family: Hero;
+        font-weight: 700;
+        src: url("fonts/ofont.ru_Hero.ttf");
+    }
+
+    body {
+        background-image: url('img/Hangar/Hangar.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+    }
+
+    html, body {
+        overflow: hidden;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .dialog {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(73, 73, 103, 0.8);
+        padding: 30px;
+        border: none;
+        border-radius: 20px;
+        z-index: 1000;
+        font-family: Hero;
+    }
+
+    .click-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: rgba(186, 186, 186, 0.59);
+        transition: filter .4s;
+        font-family: Hero;
+    }
+
+        .click-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .click-btn:active {
+            filter: brightness(70%);
+        }
+
+    .buttons {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 20px;
+    }
+
+    .dialog-message {
+        background-color: rgba(186, 186, 186, 0.74);
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .changeLocation-btn {
+        position: absolute;
+        top: 90%;
+        left: 45%;
+        filter: brightness(70%);
+        background-color: transparent;
+        border: none;
+        transition: filter .4s;
+    }
+
+        .changeLocation-btn:hover {
+            filter: brightness(100%);
+        }
+
+        .changeLocation-btn:active {
+            filter: brightness(50%);
+        }
+
+    .downArrow {
+        height: 50px;
+    }
+
+    .protect {
+        border: none;
+        background-color: transparent;
+        transform: translate(715px, 115px);
+        filter: brightness(120%);
+        transition: filter .4s;
+    }
+        .protect:hover {
+            filter: brightness(140%);
+        }
+
+        .protect:active {
+            filter: brightness(90%);
+        }
+
+    #protect {
+        height: 400px;
+    }
+
+    .panel {
+        border: none;
+        background-color: transparent;
+        transform: translate(625px, -30px);
+        filter: brightness(120%);
+        transition: filter .4s;
+    }
+
+        .panel:hover {
+            filter: brightness(140%);
+        }
+
+        .panel:active {
+            filter: brightness(90%);
+        }
+
+    #panel {
+        height: 65px;
+    }
+</style>
+
+<body>
+    <!--диалоговые окна-->
+    <div class="dialog" id="dialog">
+        <p class="dialog-message" id="dialog-msg"></p>
+        <div class="buttons" id="buttonsUse">
+            <button onclick="useItem()" class="click-btn">Использовать</button>
+            <button onclick="hideDialog()" class="click-btn">Оставить</button>
+        </div>
+        <div class="buttons" id="buttonsPutOn">
+            <button onclick="putOnItem()" class="click-btn">Надеть</button>
+            <button onclick="hideDialog()" class="click-btn">Оставить</button>
+        </div>
+    </div>
+    <button class="panel" onclick="lookPanel()">
+        <img src="img/Hangar/panel.png" id="panel">
+    </button>
+    <button class="protect" onclick="lookProtect()">
+        <img src="img/Hangar/protect.png" id="protect">
+    </button>
+    <button name="changeLocation-btn" class="changeLocation-btn" onclick="goBack()">
+        <img src="img/ForAll/downArrow.png" class="downArrow">
+    </button>
+</body>
+
+<script>
+    function lookPanel(){
+        if (@Json.Serialize(ViewBag.ProtectCardUsed)) {
+            document.getElementById('dialog').style.display = 'block';
+            document.getElementById("buttonsPutOn").style.display = "flex";
+            document.getElementById("buttonsUse").style.display = "none";
+            document.getElementById("dialog-msg").textContent = "Надеть защитный скафандр и покинуть корабль?";
+        }
+        else {
+            document.getElementById('dialog').style.display = 'block';
+            document.getElementById("buttonsPutOn").style.display = "none";
+            document.getElementById("buttonsUse").style.display = "none";
+            document.getElementById("dialog-msg").textContent = "Сейчас на планете сильный холод, без защитного скафандра долго я там не протяну";
+            setTimeout(hideDialog, 5000);
+        }
+    }
+    function lookProtect() {
+        if (@Json.Serialize(ViewBag.ProtectCardFound) && !@Json.Serialize(ViewBag.ProtectCardUsed)) {
+            document.getElementById('dialog').style.display = 'block';
+            document.getElementById("buttonsPutOn").style.display = "none";
+            document.getElementById("buttonsUse").style.display = "flex";
+            document.getElementById("dialog-msg").textContent = "Использовать ключ-карту от шкафа с защитой?";
+        }
+        else if (@Json.Serialize(ViewBag.ProtectCardUsed)){
+            document.getElementById('dialog').style.display = 'block';
+            document.getElementById("buttonsPutOn").style.display = "none";
+            document.getElementById("buttonsUse").style.display = "none";
+            document.getElementById("dialog-msg").textContent = "Больше мне это не пригодится";
+            setTimeout(hideDialog, 2000);
+        }
+        else {
+            document.getElementById('dialog').style.display = 'block';
+            document.getElementById("buttonsPutOn").style.display = "none";
+            document.getElementById("buttonsUse").style.display = "none";
+            document.getElementById("dialog-msg").textContent = "Нужна ключ-карта. Возможно она была в комнате с Лилией";
+            setTimeout(hideDialog, 3000);
+        }
+    }
+    async function putOnItem() {
+        try {
+            const response = await fetch(`/Hangar/PutOnItem`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error(await response.text());
+
+            const result = await response.json();
+
+            if (result.success) {
+                document.getElementById('dialog').style.display = 'block';
+                document.getElementById("buttonsPutOn").style.display = "none";
+                document.getElementById("buttonsUse").style.display = "none";
+                document.getElementById("dialog-msg").textContent = result.message;
+                setTimeout(() => {
+                    hideDialog;
+                    window.location.reload();
+                }, 2000);
+            } else {
+                alert("Ошибка");
+            }
+        }
+        catch (error) {
+            alert('Не удалось использовать предмет: ' + error.message);
+        }
+    }
+    async function useItem() {
+        try {
+            const response = await fetch(`/Hangar/UseItem`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error(await response.text());
+
+            const result = await response.json();
+
+            if (result.success) {
+                document.getElementById('dialog').style.display = 'block';
+                document.getElementById("buttonsPutOn").style.display = "none";
+                document.getElementById("buttonsUse").style.display = "none";
+                document.getElementById("dialog-msg").textContent = result.message;
+                setTimeout(() =>{
+                    hideDialog;
+                    window.location.reload();
+                }, 2000);
+            } else {
+                alert("Ошибка");
+            }
+        }
+        catch (error) {
+            alert('Не удалось использовать предмет: ' + error.message);
+        }
+    }
+    function goBack() {
+        try {
+            window.location.href = '/Hangar/GoBack';
+        }
+        catch (error) {
+            alert('Не удалось перейти на другую локацию: ' + error.message);
+        }
+    }
+    function hideDialog() {
+        document.getElementById('dialog').style.display = 'none';
+    }
+
+    if (@Json.Serialize(ViewBag.End)) {
+        try {
+            window.location.href = '/Hangar/End';
+        }
+        catch (error) {
+            alert('Не удалось перейти на другую локацию: ' + error.message);
+        }
+    }
+</script>
