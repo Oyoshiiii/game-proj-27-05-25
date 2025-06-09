@@ -7,10 +7,11 @@
     }
 
     body {
-        background-image: url('img/Hangar/Hangar.jpg');
+        background-image: url('img/End/End.jpg');
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
+        filter:brightness(80%);
         margin: 0;
         padding: 0;
     }
@@ -52,7 +53,7 @@
         height: 100%;
         background-color: black;
         z-index: 9999;
-        animation: fadeOut 2s ease-in-out forwards;
+        animation: fadeOut 3s ease-in-out forwards;
     }
 
     @@keyframes fadeOut {
@@ -66,3 +67,17 @@
         }
     }
 </style>
+
+<body>
+    <div class="dialog" id="dialog">
+        <p class="dialog-message" id="dialog-msg"></p>
+    </div>
+</body>
+
+<script>
+    function showDialog(){
+        document.getElementById("dialog").style.display = "block";
+        document.getElementById("dialog-msg").textContent = "Спасибо за прохождение";
+    }
+    setTimeout(showDialog, 5000);
+</script>
