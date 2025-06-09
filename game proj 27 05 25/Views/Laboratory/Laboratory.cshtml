@@ -117,16 +117,16 @@
         left: 80%;
         background-color: transparent;
         border: none;
-        filter: brightness(90%);
+        filter: brightness(70%);
         transition: filter .4s;
     }
 
         .changeLocationRight-btn:hover {
-            filter: brightness(120%);
+            filter: brightness(100%);
         }
 
         .changeLocationRight-btn:active {
-            filter: brightness(70%);
+            filter: brightness(50%);
         }
 
     .rightArrow {
@@ -177,7 +177,7 @@
         else {
             document.getElementById('dialog').style.display = 'block';
             document.getElementById('buttons').style.display = 'none';
-            document.getElementById('dialog-msg').textContent = 'Я вижу дверь, но тут очень темно, я не дойду до неё. Быть может в той комнате был фонарик?';
+            document.getElementById('dialog-msg').textContent = 'Я вижу дверь, но тут очень темно, я не дойду до неё. Быть может в той комнате с фотографией был фонарик?';
             setTimeout(hideDialog, 5000);
         }
     }

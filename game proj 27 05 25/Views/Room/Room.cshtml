@@ -1,1 +1,228 @@
-﻿
+﻿@using game_proj_27_05_25.Models;
+
+<style>
+    @@font-face {
+        font-family: Hero;
+        font-weight: 700;
+        src: url("fonts/ofont.ru_Hero.ttf");
+    }
+
+    body {
+        background-image: url('img/Room/Room.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+    }
+
+    html, body {
+        overflow: hidden;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .dialog {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(73, 73, 103, 0.8);
+        padding: 30px;
+        border: none;
+        border-radius: 20px;
+        z-index: 1000;
+        font-family: Hero;
+    }
+
+    .click-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: rgba(186, 186, 186, 0.59);
+        transition: filter .4s;
+        font-family: Hero;
+    }
+
+        .click-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .click-btn:active {
+            filter: brightness(70%);
+        }
+
+    .buttons {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 20px;
+    }
+
+    .dialog-message {
+        background-color: rgba(186, 186, 186, 0.74);
+        padding: 5px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .changeLocation-btn {
+        position: absolute;
+        top: 90%;
+        left: 45%;
+        background-color: transparent;
+        border: none;
+        transition: filter .4s;
+    }
+
+        .changeLocation-btn:hover {
+            filter: brightness(120%);
+        }
+
+        .changeLocation-btn:active {
+            filter: brightness(70%);
+        }
+    .downArrow
+    {
+        height: 50px;
+    }
+
+    .lily {
+        border: none;
+        background-color: transparent;
+        transform: translate(592px, 415px);
+        filter: brightness(120%);
+        transition: filter .4s;
+    }
+
+        .lily:hover {
+            filter: brightness(140%);
+        }
+
+        .lily:active {
+            filter: brightness(90%);
+        }
+
+    #lily {
+        height: 140px;
+    }
+
+    .bed {
+        border: none;
+        background-color: transparent;
+        transform: translate(85px, 365px);
+        filter: brightness(120%);
+        transition: filter .4s;
+    }
+
+        .bed:hover {
+            filter: brightness(140%);
+        }
+
+        .bed:active {
+            filter: brightness(90%);
+        }
+
+    #bed {
+        height: 110px;
+    }
+</style>
+
+<body>
+    <!--диалоговые окна-->
+    <div class="dialog" id="dialog">
+        <p class="dialog-message" id="dialog-msg"></p>
+        <div class="buttons" id="buttons">
+            <button onclick="takeItem()" class="click-btn">Взять</button>
+            <button onclick="hideDialog()" class="click-btn">Оставить</button>
+        </div>
+    </div>
+    <!--смена локации-->
+    <button name="changeLocation-btn" class="changeLocation-btn" onclick="goBack()">
+        <img src="img/ForAll/downArrow.png" class="downArrow">
+    </button>
+    <button class="bed" onclick="lookBed()">
+        <img src="img/Room/bed.png" id="bed">
+    </button>
+    <button class="lily" onclick="lookLily()">
+        <img src="img/Room/Lily.png" id="lily">
+    </button>
+</body>
+
+<script>
+    let k = 0;
+    let id = 1;
+    function lookBed() {
+        if (k == 0 || k == 2) {
+            document.getElementById('dialog').style.display = "block";
+            document.getElementById('buttons').style.display = 'none';
+            document.getElementById('dialog-msg').textContent = "Очень неудобная кровать, но достаточно просторная.";
+            setTimeout(hideDialog, 3000);
+        }
+        if (k == 1) {
+            document.getElementById('dialog').style.display = "block";
+            document.getElementById('buttons').style.display = 'flex';
+            document.getElementById('dialog-msg').textContent = "У стены на кровати лежала ещё одна ключ-карта. Вять её?";
+        }
+    }
+    function lookLily() {
+        document.getElementById('dialog').style.display = "block";
+        document.getElementById('buttons').style.display = 'none';
+
+        document.getElementById('dialog-msg').textContent = "Под колпаком виднеется засохшая лилия. Походу, её давно никто не поливал";
+        setTimeout(() => {
+            document.getElementById('dialog-msg').textContent = "Значит, корабль уже разбился давно? Или он разбивался уже и раньше";
+            setTimeout(() => {
+                document.getElementById('dialog-msg').textContent = "Почему я так думаю? И что самое странное, я так думаю будто уже не впервые..";
+                setTimeout(() => {
+                    document.getElementById('dialog').style.display = 'none';
+                }, 5000);
+            }, 4000);
+        }, 4000);
+    }
+    async function takeItem() {
+        if (!id) return;
+
+        try {
+            const response = await fetch(`/Room/TakeItem/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error(await response.text());
+
+            const result = await response.json();
+
+            if (result.success) {
+                document.getElementById('buttons').style.display = 'none';
+                document.getElementById('dialog-msg').textContent = result.message;
+                k = 2;
+                setTimeout(hideDialog, 3000);
+            } else {
+                alert(result.message);
+            }
+        }
+        catch (error) {
+            alert('Не удалось взять предмет: ' + error.message);
+        }
+    }
+    function goBack() {
+        try {
+            window.location.href = '/Room/GoBack';
+        }
+        catch (error) {
+            alert('Не удалось перейти на другую локацию: ' + error.message);
+        }
+    }
+    function hideDialog() {
+        document.getElementById('dialog').style.display = 'none';
+        if (k == 0 && !@Json.Serialize(ViewBag.ProtectCardFound)) {
+            k = 1;
+            lookBed();
+        }
+    }
+</script>
